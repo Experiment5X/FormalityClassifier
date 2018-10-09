@@ -1,5 +1,5 @@
 import nltk
-from src import utils
+import utils
 
 
 def sentence_generator(sentence_limit=10000, min_sentence_length=5, max_sentence_length=30):
