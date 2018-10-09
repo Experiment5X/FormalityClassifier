@@ -1,4 +1,6 @@
+import os
 import nltk
+import pickle
 import random
 import operator
 import functools
@@ -61,12 +63,14 @@ def get_sentence_matrices(mapped_informal_sentences, mapped_formal_sentences, ma
     return sentence_matrix, label_matrix
 
 
-def get_sentence_matrix(sentences, max_sentence_length=30):
-    total_sentence_count = len(sentences)
+def get_sentence_matrix(tokenizer, lst_sentences, max_sentence_length=30):
+    mapped_sentences = tokenizer.texts_to_sequences(lst_sentences)
+
+    total_sentence_count = len(mapped_sentences)
     sentence_matrix = np.zeros((total_sentence_count, max_sentence_length))
 
     for sent_index in range(0, total_sentence_count):
-        full_sentence = sentences[sent_index]
+        full_sentence = mapped_sentences[sent_index]
         full_sentence_np = np.array(full_sentence)
 
         # pad it to the max sentence length
@@ -93,17 +97,22 @@ def get_numerical_training_data(lst_informal_sentences, lst_formal_sentences):
     return X, Y, word_embeddings
 
 
-def get_numerical_test_data(lst_informal_sentences, lst_formal_sentences, lst_sentences_raw):
+def get_numerical_test_data(lst_informal_sentences, lst_formal_sentences, lst_sentences_raw, pickle_path=None):
+    if pickle_path is None:
+        all_sentences = lst_informal_sentences + lst_formal_sentences
+        tokenizer = Tokenizer()
+        tokenizer.fit_on_texts(all_sentences)
+
+        with open('tokenizer.p', 'wb') as f_tokenizer:
+            pickle.dump(tokenizer, f_tokenizer)
+    else:
+        with open(os.path.join(pickle_path, 'tokenizer.p'), 'rb') as f_tokenizer:
+            tokenizer = pickle.load(f_tokenizer)
+
     lst_sentences_tokenized = map(nltk.word_tokenize, lst_sentences_raw)
-    lst_sentences_cleaned = list(clean_sentences(lst_informal_sentences, lst_formal_sentences, lst_sentences_tokenized))
+    lst_sentences_cleaned = list(clean_sentences(lst_informal_sentences, lst_formal_sentences, lst_sentences_tokenized, pickle_path))
 
-    all_sentences = lst_informal_sentences + lst_formal_sentences
-    tokenizer = Tokenizer()
-    tokenizer.fit_on_texts(all_sentences)
-
-    mapped_sentences = tokenizer.texts_to_sequences(lst_sentences_cleaned)
-    X = get_sentence_matrix(mapped_sentences)
-
+    X = get_sentence_matrix(tokenizer, lst_sentences_cleaned)
     return X
 
 
@@ -126,9 +135,15 @@ def get_training_sentences(sentence_limit=10000):
     return reddit_sentences_cleaned, brown_sentences_cleaned
 
 
-def clean_sentences(lst_informal_sentences, lst_formal_sentences, sentences_to_clean):
-    words = functools.reduce(operator.add, lst_informal_sentences + lst_formal_sentences)
-    dist = nltk.FreqDist(words)
+def clean_sentences(lst_informal_sentences, lst_formal_sentences, sentences_to_clean, pickle_path=None):
+    if pickle_path is None:
+        words = functools.reduce(operator.add, lst_informal_sentences + lst_formal_sentences)
+        dist = nltk.FreqDist(words)
+        with open('freq_dist.p', 'wb') as f_dist:
+            pickle.dump(dist, f_dist)
+    else:
+        with open(os.path.join(pickle_path, 'freq_dist.p'), 'rb') as f_dist:
+            dist = pickle.load(f_dist)
 
     return utils.remove_uncommon_words(dist, sentences_to_clean)
 
