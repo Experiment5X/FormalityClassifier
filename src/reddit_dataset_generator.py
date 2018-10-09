@@ -1,6 +1,6 @@
 import nltk
 import json
-from src import utils
+import utils
 
 
 def sentence_generator_from_file(comments_file_path, sentence_limit=10000, min_sentence_length=5, max_sentence_length=30):

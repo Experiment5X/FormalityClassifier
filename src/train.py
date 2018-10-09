@@ -1,5 +1,5 @@
 import pickle
-from src.prepare_training_data import get_numerical_training_data, get_training_sentences
+from prepare_training_data import get_numerical_training_data, get_training_sentences
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Embedding, Activation
 from keras.regularizers import l2

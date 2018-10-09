@@ -1,6 +1,6 @@
 import os
 import nltk
-from src import utils
+import utils
 
 
 def sentence_generator_from_directory(directory_path, file_limit=None):

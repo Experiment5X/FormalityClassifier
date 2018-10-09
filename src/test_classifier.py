@@ -2,7 +2,7 @@ import os
 import sys
 import pickle
 from keras.models import load_model
-from src.prepare_training_data import get_numerical_test_data, get_training_sentences
+from prepare_training_data import get_numerical_test_data, get_training_sentences
 
 
 if len(sys.argv) <= 1:

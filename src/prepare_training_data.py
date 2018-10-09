@@ -1,11 +1,13 @@
 import os
 import nltk
+import utils
+import reddit_dataset_generator
+import brown_dataset_generator
 import pickle
 import random
 import operator
 import functools
 import numpy as np
-from src import reddit_dataset_generator, utils, brown_dataset_generator
 from keras.preprocessing.text import Tokenizer
 
 
