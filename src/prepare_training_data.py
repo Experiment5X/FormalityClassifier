@@ -99,7 +99,7 @@ def get_numerical_training_data(lst_informal_sentences, lst_formal_sentences):
     return X, Y, word_embeddings
 
 
-def get_numerical_test_data(lst_informal_sentences, lst_formal_sentences, lst_sentences_raw, pickle_path=None):
+def get_numerical_test_data(lst_informal_sentences, lst_formal_sentences, lst_sentences_raw, pickle_path=None, skip_word_tokenization=False):
     if pickle_path is None:
         all_sentences = lst_informal_sentences + lst_formal_sentences
         tokenizer = Tokenizer()
@@ -111,7 +111,10 @@ def get_numerical_test_data(lst_informal_sentences, lst_formal_sentences, lst_se
         with open(os.path.join(pickle_path, 'tokenizer.p'), 'rb') as f_tokenizer:
             tokenizer = pickle.load(f_tokenizer)
 
-    lst_sentences_tokenized = map(nltk.word_tokenize, lst_sentences_raw)
+    if not skip_word_tokenization:
+        lst_sentences_tokenized = map(nltk.word_tokenize, lst_sentences_raw)
+    else:
+        lst_sentences_tokenized = lst_sentences_raw
     lst_sentences_cleaned = list(clean_sentences(lst_informal_sentences, lst_formal_sentences, lst_sentences_tokenized, pickle_path))
 
     X = get_sentence_matrix(tokenizer, lst_sentences_cleaned)
