@@ -1,8 +1,11 @@
 import pymysql
 
-def create_schema(cursor):
-    query = 'CREATE TABLE IF NOT EXISTS  Word_Formality (word VARCHAR(32), formality float(5,5))'
+def test_schema(cursor):
+    query = 'SHOW TABLES'
     cursor.execute(query)
+
+    for table in cursor:
+        print(table)
 
 def main():
     #grab credentials
@@ -14,8 +17,7 @@ def main():
     #create connection object
     conn = pymysql.connect(host='ws-db.cxn6r23mlloe.us-east-1.rds.amazonaws.com',user=user, password=pw, db='corpus')
     cursor = conn.cursor()
-    
-    create_schema(cursor)
+
     test_schema(cursor)
     
 main()
