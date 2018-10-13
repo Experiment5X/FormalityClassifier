@@ -6,7 +6,7 @@ from prepare_training_data import get_numerical_test_data, get_training_sentence
 
 
 if len(sys.argv) <= 1:
-    pickle_path = './saved_data/10000sentences/'
+    pickle_path = './saved_data/50000sentences/'
 elif len(sys.argv) == 2:
     pickle_path = sys.argv[1]
 else:
